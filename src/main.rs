@@ -8,6 +8,27 @@ struct WordVecHash {
     word_vec: Vec<(char, u16)>,
 }
 
+impl WordVecHash {
+    fn merge(&self, other: &WordVecHash) -> WordVecHash {
+        let mut merged = WordVecHash { 
+            word_hash: self.word_hash.clone(), 
+            word_vec: self.word_vec.clone(),
+        };
+        for (letter, count) in &other.word_hash {
+            if merged.word_hash.contains_key(letter) {
+                for elem in &mut merged.word_vec {
+                    if elem.0 == *letter { elem.1 += count; break }
+                }
+            }
+            else {
+                merged.word_hash.insert(*letter, *count);
+                merged.word_vec.push((*letter, *count));
+            }
+        }
+        merged
+    }
+}
+
 fn main() {
     let args: Vec<String> = env::args().collect();
     if args.len() < 3 { 
