@@ -6,13 +6,16 @@ use std::collections::HashMap;
 
 fn merge_vecs(first: &Vec<(char, u16)>, second: &Vec<(char, u16)>) -> Vec<(char, u16)> {
     let mut merged = first.clone();
-    let map: HashMap<_, _> = merged.clone().into_iter().collect();
+    //let map: HashMap<_, _> = merged.clone().into_iter().collect();
     for (letter, count) in second {
-        if map.contains_key(letter) {
-            for elem in &mut merged {
-                if elem.0 == *letter { elem.1 += count; break }
-            }
+        if let Some(elem) = merged.iter_mut().find(|x| x.0 == *letter) {
+            elem.1 += count;
         }
+      //if map.contains_key(letter) {
+      //    for elem in &mut merged {
+      //        if elem.0 == *letter { elem.1 += count; break }
+      //    }
+      //}
         else {
             merged.push((*letter, *count));
         }
