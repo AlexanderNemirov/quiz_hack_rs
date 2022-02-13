@@ -4,25 +4,6 @@ use std::io::{BufRead, BufReader};
 use std::time::Instant;
 use std::collections::HashMap;
 
-fn merge_vecs(first: &Vec<(char, u16)>, second: &Vec<(char, u16)>) -> Vec<(char, u16)> {
-    let mut merged = first.clone();
-    //let map: HashMap<_, _> = merged.clone().into_iter().collect();
-    for (letter, count) in second {
-        if let Some(elem) = merged.iter_mut().find(|x| x.0 == *letter) {
-            elem.1 += count;
-        }
-      //if map.contains_key(letter) {
-      //    for elem in &mut merged {
-      //        if elem.0 == *letter { elem.1 += count; break }
-      //    }
-      //}
-        else {
-            merged.push((*letter, *count));
-        }
-    }
-    merged
-}
-
 fn main() {
     let args: Vec<String> = env::args().collect();
     if args.len() < 3 { 
@@ -31,12 +12,12 @@ fn main() {
     let letters = str_2_hashmap(&args[2]);
     let rf_now = Instant::now();
     let words = read_words(&args[1], &letters);
-    println!("read and filter time: {}", rf_now.elapsed().as_millis());
+    println!("read and filter time: {:?}", rf_now.elapsed());
     println!("words filtered: {}", words.len());
     if words.len() >= 5 {
         let s_now = Instant::now();
         let solution = gen_main(&words, &letters);
-        println!("solve time: {}", s_now.elapsed().as_millis());
+        println!("solve time: {:?}", s_now.elapsed());
         println!("number of solutions: {}", solution.len());
     }
 }
@@ -86,6 +67,19 @@ fn read_words(path: &String, letters: &HashMap<char, u16>) -> Vec<Vec<(char, u16
     filter_wrds
 }
 
+fn merge_vecs(first: &Vec<(char, u16)>, second: &Vec<(char, u16)>) -> Vec<(char, u16)> {
+    let mut merged = first.clone();
+    for (letter, count) in second {
+        if let Some(elem) = merged.iter_mut().find(|x| x.0 == *letter) {
+            elem.1 += count;
+        }
+        else {
+            merged.push((*letter, *count));
+        }
+    }
+    merged
+}
+
 fn final_check(combined: &Vec<(char, u16)>, letters: &HashMap<char, u16>) -> bool {
     if combined.len() != letters.len() { return false }
     for (letter, count) in combined {
@@ -106,7 +100,6 @@ fn iter_check(combined: &Vec<(char, u16)>, letters: &HashMap<char, u16>, len: us
     true
 }
 
-
 fn gen(words: &Vec<Vec<(char, u16)>>, letters: &HashMap<char, u16>, combined: &Vec<(char, u16)>,
        index_start: usize, indices: &mut Vec<usize>, solution: &mut Vec<[usize; 5]>) {
     if indices.len() == 5 {
@@ -126,7 +119,6 @@ fn gen(words: &Vec<Vec<(char, u16)>>, letters: &HashMap<char, u16>, combined: &V
         gen(words, letters, &comb_next, index+1, indices, solution);
         indices.pop();
     }
-
 }
 
 fn gen_main(words: &Vec<Vec<(char, u16)>>, letters: &HashMap<char, u16>) -> Vec<[usize; 5]> {
