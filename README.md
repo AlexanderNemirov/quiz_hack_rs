@@ -1,11 +1,11 @@
 # quiz_hack_rs
 Task:\
 search for every 5 words which consist of the required
-letters set\
+letters set
 
-Contains:\
-- Rust implementation of C++ project\
-- Python testing script\
+Contains:
+- Rust implementation of C++ project
+- Python testing script
 
 Interface:\
 launch arguments: path to the file, required letters
