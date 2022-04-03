@@ -1,5 +1,5 @@
 pub mod containers_tools {
-    
+
     use std::collections::HashMap;
 
     pub fn str_2_hashmap(word: &String) -> HashMap<char, u16> {

@@ -37,4 +37,40 @@ pub mod input_tools {
         }
         filter_wrds
     }
+
+    #[cfg(test)]
+    mod tests {
+        use super::*;
+        use std::collections::HashMap;
+
+        #[test]
+        fn filter_test() {
+            let letters_test = HashMap::from([('w', 1), ('o', 1), ('r', 1), ('d', 1)]);
+            let word_test_1 = vec![('d', 1), ('r', 1), ('o', 1), ('w', 1)];
+            let word_test_2 = vec![('d', 1), ('r', 1), ('w', 1)];
+            let word_test_3 = vec![('d', 1), ('z', 1), ('w', 1)];
+
+            assert_eq!(true, filter_word(&word_test_1, &letters_test));
+            assert_eq!(true, filter_word(&word_test_2, &letters_test));
+            assert_eq!(false, filter_word(&word_test_3, &letters_test));
+        }
+
+        #[test]
+        fn filter_read() {
+            //тетачасчастьчетачечет
+            let letters_test =
+                HashMap::from([('т', 5), ('а', 4), ('е', 4), ('ч', 5), ('с', 2), ('ь', 1)]);
+            let path_test = String::from("data/word_rus1000.txt");
+
+            let words_test = vec!["часть", "час", "счет", "сеть", "честь", "счастье"];
+            let mut vecs_test = vec![];
+            for word in words_test {
+                vecs_test.push(str_2_vec(&word.to_string()));
+            }
+
+            let vecs_file = read_words(&path_test, &letters_test);
+
+            assert_eq!(vecs_test.len(), vecs_file.len());
+        }
+    }
 }
