@@ -1,5 +1,4 @@
 pub mod search_tools {
-
     use std::collections::HashMap;
 
     pub use crate::containers::containers_tools::merge_vecs;

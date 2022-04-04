@@ -1,5 +1,4 @@
 pub mod input_tools {
-
     use std::collections::HashMap;
     use std::fs::File;
     use std::io::{BufRead, BufReader};
@@ -15,13 +14,17 @@ pub mod input_tools {
         true
     }
 
-    pub fn read_words(path: &String, letters: &HashMap<char, u16>) -> Vec<Vec<(char, u16)>> {
+    pub fn read_words(
+        path: &String,
+        letters: &HashMap<char, u16>,
+    ) -> (Vec<Vec<(char, u16)>>, Vec<String>) {
         let file_in = match File::open(path) {
             Err(why) => panic!("couldn't open {}: {}", path, why),
             Ok(file_in) => file_in,
         };
         let buff_in = BufReader::new(file_in);
-        let mut filter_wrds: Vec<Vec<(char, u16)>> = Vec::new();
+        let mut filter_vecs: Vec<Vec<(char, u16)>> = Vec::new();
+        let mut filter_wrds: Vec<String> = Vec::new();
         for line_opt in buff_in.lines() {
             let line = if let Ok(line) = line_opt {
                 line
@@ -30,12 +33,13 @@ pub mod input_tools {
             };
             let word_vec = str_2_vec(&line);
             if filter_word(&word_vec, letters) {
-                filter_wrds.push(word_vec);
+                filter_vecs.push(word_vec);
+                filter_wrds.push(line);
             } else {
                 continue;
             }
         }
-        filter_wrds
+        (filter_vecs, filter_wrds)
     }
 
     #[cfg(test)]
@@ -56,21 +60,16 @@ pub mod input_tools {
         }
 
         #[test]
-        fn filter_read() {
+        fn read_test() {
             //тетачасчастьчетачечет
             let letters_test =
                 HashMap::from([('т', 5), ('а', 4), ('е', 4), ('ч', 5), ('с', 2), ('ь', 1)]);
             let path_test = String::from("data/word_rus1000.txt");
 
             let words_test = vec!["часть", "час", "счет", "сеть", "честь", "счастье"];
-            let mut vecs_test = vec![];
-            for word in words_test {
-                vecs_test.push(str_2_vec(&word.to_string()));
-            }
+            let (_, words_file) = read_words(&path_test, &letters_test);
 
-            let vecs_file = read_words(&path_test, &letters_test);
-
-            assert_eq!(vecs_test.len(), vecs_file.len());
+            assert_eq!(words_test.len(), words_file.len());
         }
     }
 }

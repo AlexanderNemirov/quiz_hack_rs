@@ -17,12 +17,12 @@ fn main() {
     }
     let letters = str_2_hashmap(&args[2]);
     let rf_now = Instant::now();
-    let words = read_words(&args[1], &letters);
+    let (vecs, words) = read_words(&args[1], &letters);
     println!("read and filter time: {:?}", rf_now.elapsed());
     println!("words filtered: {}", words.len());
     if words.len() >= 5 {
         let s_now = Instant::now();
-        let solution = gen_main(&words, &letters);
+        let solution = gen_main(&vecs, &letters);
         println!("solve time: {:?}", s_now.elapsed());
         println!("number of solutions: {}", solution.len());
     }
